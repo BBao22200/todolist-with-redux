@@ -9,7 +9,7 @@ function App() {
     <div
     style={{
       width: 500,
-      margin: '0 auto',
+      margin: '0 auto',       
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: 'white',

@@ -1,143 +1,47 @@
-// import { Row, Tag, Checkbox } from 'antd';
-import { Space, Table, Tag } from 'antd';
-// import { useState } from 'react';
+import { Row, Tag, Checkbox, Button } from 'antd';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from "axios";
+import { fetchAPI } from '../redux/actions';
+export default function Todo({data}) {
+  const { id, todo, priority, category } = data;
+  const [checked, setChecked] = useState(false);
 
-// const priorityColorMapping = {
-//   High: 'red',
-//   Medium: 'blue',
-//   Low: 'gray',
-// };
+  const toggleCheckbox = () => {
+    setChecked(!checked);
+  };
 
-// export default function Todo({ name, prioriry }) {
-//   const [checked, setChecked] = useState(false);
+  const dispatch = useDispatch();
 
-//   const toggleCheckbox = () => {
-//     setChecked(!checked);
-//   };
+  const handleDeleteTodo = async () => {
+    const response = await axios.delete(`http://localhost:3000/todos/${id}`)
+    console.log('response', response);
+    // dispatch(fetchAPI(response.data))
+  }
 
-//   return (
-//     <Row
-//       justify='space-between'
-//       style={{
-//         marginBottom: 3,
-//         ...(checked ? { opacity: 0.5, textDecoration: 'line-through' } : {}),
-//       }}
-//     >
-//       <Checkbox checked={checked} onChange={toggleCheckbox}>
-//         {name}
-//       </Checkbox>
-//       <Tag color={priorityColorMapping[prioriry]} style={{ margin: 0 }}>
-//         {prioriry}
-//       </Tag>
-//     </Row>
-//   );
-// }
+  return (
+    <div className='todo'>
+      <Row
+        justify='space-between'
+        style={{
+          marginBottom: 3,
+          ...(checked ? { opacity: 0.5, textDecoration: 'line-through' } : {}),
+        }}
+      >
+        <Checkbox checked={checked} onChange={toggleCheckbox}>
+          {todo}
+        </Checkbox>
+        <div>
+          <Tag style={{ margin: 0 }}>
+            {priority}
+          </Tag>
+          <Tag style={{ margin: 0 }}>
+            {category}
+          </Tag>
+        </div>
+      </Row>
+      <Button onClick={handleDeleteTodo}>Delete</Button>
+    </div>
 
-const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-  ];
-  const Todo = () => <Table columns={columns} dataSource={data} />;
-  export default Todo;
+  );
+}
