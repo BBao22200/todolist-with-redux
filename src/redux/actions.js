@@ -1,12 +1,12 @@
 export const addTodo = (data) => {
     return {
         type: "ADD_TODO",
-        payload: data,
+        payload: data
     };
 };
-export const fetchAPI = (data) => {
+export const fetchData = (data) => {
     return {
-        type: "FETCH_API",
+        type: "FETCH_DATA",
         payload: data
     };
 };
@@ -16,3 +16,9 @@ export const filterByStatus = (status) => {
         payload: status
     };
 };
+export const deleteTodo = (id) => {
+    return {
+        type: "DELETE",
+        payload: id
+    }
+}

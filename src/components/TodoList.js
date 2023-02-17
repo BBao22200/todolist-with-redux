@@ -3,18 +3,20 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { format } from "date-fns";
 
 import Todo from "./Todo";
-import { addTodo } from "../redux/actions";
-import { fetchAPI } from "../redux/actions";
+import { addTodo, fetchData, addDataToStore} from "../redux/actions";
 
 export default function TodoList() {
   const [input, setInput] = useState("")
-  const [priority, setPriority] = useState("Medium")
-  const [category, setCategory] = useState("Learning")
+  const [priority, setPriority] = useState("MEDIUM")
+  const [category, setCategory] = useState("LEARNING")
 
   const todosList = useSelector((state) => state.todoslist);
-  console.log({ todosList })
+  // console.log('todo list', todosList);
+
+  const date = format(new Date(), 'yyyy-MM-dd');
 
   const dispatch = useDispatch();
 
@@ -31,17 +33,24 @@ export default function TodoList() {
   }
 
   const handleButtonClick = async () => {
-    // dispatch(addTodo({
-    //   id: uuidv4(),
-    //   todo: input,
-    //   priority: priority,
-    //   category: category,
-    //   status: "To do",
-    //   dueDate: Date()
-    // }))
-    // setInput("")
-    const response = await axios.post(`http://localhost:3000/todos/`)
-    console.log(response)
+    const temp = {
+      "id": (Math.random() * 11),
+      "todo": input,
+      "priority": priority,
+      "category": category,
+      "status": "TO DO",
+      "dueDate": date
+    }
+    try {
+      const response = await axios.post('http://localhost:3000/todos', temp);
+      console.log("🚀 ~ file: TodoList.js:46 ~ handleButtonClick ~ response", response)
+      if (response?.status === 200) {
+        dispatch(addTodo(temp))
+      }
+      console.log("todosList: ",todosList)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -51,7 +60,7 @@ export default function TodoList() {
           `http://localhost:3000/todos/`
         );
         if (response?.status === 200) {
-          dispatch(fetchAPI(response.data));
+          dispatch(fetchData(response.data));
         }
         console.log("response", response.data);
       } catch (error) {
@@ -67,7 +76,7 @@ export default function TodoList() {
         {todosList.map((todo => (
           todo.map(item => {
             return (
-              <Todo 
+              <Todo
                 key={item.id}
                 data={item}
               />
@@ -79,25 +88,25 @@ export default function TodoList() {
         <Input.Group style={{ display: "flex" }}>
           <Input onChange={handleInputChange} value={input} />
           <Button type="primary" onClick={handleButtonClick}>Add</Button>
-          <Select defaultValue="Medium" onChange={handlePriorityChange} value={priority}>
-            <Select.Option value="High" label="High">
+          <Select defaultValue="MEDIUM" onChange={handlePriorityChange} value={priority}>
+            <Select.Option value="HIGH" label="High">
               <Tag>High</Tag>
             </Select.Option>
-            <Select.Option value="Medium" label="Medium">
+            <Select.Option value="MEDIUM" label="Medium">
               <Tag>Medium</Tag>
             </Select.Option>
-            <Select.Option value="Low" label="Low">
+            <Select.Option value="LOW" label="Low">
               <Tag>Low</Tag>
             </Select.Option>
           </Select>
-          <Select defaultValue="Learning" onChange={handleCategoryChange} value={category}>
-            <Select.Option value="Work" label="Work">
+          <Select defaultValue="LEARNING" onChange={handleCategoryChange} value={category}>
+            <Select.Option value="WORK" label="Work">
               <Tag>Work</Tag>
             </Select.Option>
-            <Select.Option value="Home" label="Home">
+            <Select.Option value="HOME" label="Home">
               <Tag>Home</Tag>
             </Select.Option>
-            <Select.Option value="Learning" label="Learning">
+            <Select.Option value="LEARNING" label="Learning">
               <Tag>Learning</Tag>
             </Select.Option>
           </Select>

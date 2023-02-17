@@ -10,24 +10,8 @@ export default function Filters() {
   const handleRadioChange = (choice) => {
     setFilterStatus(choice.target.value)
   }
-  // console.log(filterStatus)
+  
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const filterStatus = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:3000/todos/?status=DONE`
-  //       );
-  //       if (response?.status === 200) {
-  //         dispatch(filterByStatus(response.data));
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   filterStatus();
-  // }, []);
 
   const handleButtonClick = () => {
     filterStatus();
