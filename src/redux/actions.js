@@ -10,12 +10,7 @@ export const fetchData = (data) => {
         payload: data
     };
 };
-export const filterByStatus = (status) => {
-    return {
-        type: "FILTER_BY_STATUS",
-        payload: status
-    };
-};
+
 export const deleteTodo = (id) => {
     return {
         type: "DELETE",

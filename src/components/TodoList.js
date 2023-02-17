@@ -1,12 +1,11 @@
 import { Col, Row, Input, Button, Select, Tag } from "antd";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { format } from "date-fns";
 
 import Todo from "./Todo";
-import { addTodo, fetchData, addDataToStore} from "../redux/actions";
+import { addTodo, fetchData } from "../redux/actions";
 
 export default function TodoList() {
   const [input, setInput] = useState("")
@@ -14,7 +13,6 @@ export default function TodoList() {
   const [category, setCategory] = useState("LEARNING")
 
   const todosList = useSelector((state) => state.todoslist);
-  // console.log('todo list', todosList);
 
   const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -32,7 +30,7 @@ export default function TodoList() {
     setCategory(value)
   }
 
-  const handleButtonClick = async () => {
+  const handleAddButtonClick = async () => {
     const temp = {
       "id": (Math.random() * 11),
       "todo": input,
@@ -43,14 +41,18 @@ export default function TodoList() {
     }
     try {
       const response = await axios.post('http://localhost:3000/todos', temp);
-      console.log("🚀 ~ file: TodoList.js:46 ~ handleButtonClick ~ response", response)
       if (response?.status === 200) {
-        dispatch(addTodo(temp))
+        // dispatch(addTodo(temp))
+        const newResponse = await axios.get(
+          `http://localhost:3000/todos/`
+        );
+        dispatch(fetchData(newResponse.data))
       }
       console.log("todosList: ",todosList)
     } catch (error) {
       console.log(error)
     }
+    setInput("")
   }
 
   useEffect(() => {
@@ -73,21 +75,19 @@ export default function TodoList() {
   return (
     <Row style={{ height: "calc(100% - 40px)" }}>
       <Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
-        {todosList.map((todo => (
-          todo.map(item => {
-            return (
-              <Todo
-                key={item.id}
-                data={item}
-              />
-            )
-          })
-        )))}
+        {todosList.map((todo => {
+          return (
+            <Todo 
+            key={todo.id}
+            data={todo}
+            />
+          )
+        }))}
       </Col>
       <Col span={24}>
         <Input.Group style={{ display: "flex" }}>
           <Input onChange={handleInputChange} value={input} />
-          <Button type="primary" onClick={handleButtonClick}>Add</Button>
+          <Button type="primary" onClick={handleAddButtonClick}>Add</Button>
           <Select defaultValue="MEDIUM" onChange={handlePriorityChange} value={priority}>
             <Select.Option value="HIGH" label="High">
               <Tag>High</Tag>

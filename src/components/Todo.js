@@ -15,12 +15,13 @@ export default function Todo({ data }) {
   const dispatch = useDispatch();
 
   const handleDeleteTodo = async () => {
-    // console.log('response', response);
-    // dispatch(fetchAPI(response.data))
     try {
       const response = await axios.delete(`http://localhost:3000/todos/${id}`)
       if (response?.status === 200) {
-        dispatch(deleteTodo(id))
+        // dispatch(deleteTodo(id))
+        const newResponse = await axios.get(`http://localhost:3000/todos/`)
+        dispatch(fetchData(newResponse.data))
+        // console.log("🚀 ~ file: Todo.js:24 ~ handleDeleteTodo ~ newResponse", newResponse)
       }
     } catch (error) {
       console.log(error)
