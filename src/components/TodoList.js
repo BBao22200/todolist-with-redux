@@ -5,7 +5,8 @@ import axios from "axios";
 import { format } from "date-fns";
 
 import Todo from "./Todo";
-import { addTodo, fetchData } from "../redux/actions";
+import { fetchData } from "../redux/actions";
+import { fetchDataFromAPI } from "../API/fetchDataFromAPI";
 
 export default function TodoList() {
   const [input, setInput] = useState("")
@@ -42,11 +43,7 @@ export default function TodoList() {
     try {
       const response = await axios.post('http://localhost:3000/todos', temp);
       if (response?.status === 200) {
-        // dispatch(addTodo(temp))
-        const newResponse = await axios.get(
-          `http://localhost:3000/todos/`
-        );
-        dispatch(fetchData(newResponse.data))
+        fetchDataFromAPI(dispatch)
       }
       console.log("todosList: ",todosList)
     } catch (error) {
