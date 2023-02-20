@@ -5,7 +5,7 @@ import axios from "axios";
 import { format } from "date-fns";
 
 import Todo from "./Todo";
-import { fetchData } from "../redux/actions";
+import { addItem, fetchData } from "../redux/actions";
 import { fetchDataFromAPI } from "../API/fetchDataFromAPI";
 
 export default function TodoList() {
@@ -31,7 +31,7 @@ export default function TodoList() {
     setCategory(value)
   }
 
-  const handleAddButtonClick = async () => {
+  const handleAddButtonClick = () => {
     const temp = {
       "id": (Math.random() * 11),
       "todo": input,
@@ -40,16 +40,18 @@ export default function TodoList() {
       "status": "TO DO",
       "dueDate": date
     }
-    try {
-      const response = await axios.post('http://localhost:3000/todos', temp);
-      if (response?.status === 200) {
-        fetchDataFromAPI(dispatch)
-      }
-      console.log("todosList: ",todosList)
-    } catch (error) {
-      console.log(error)
-    }
+    // try {
+    //   const response = await axios.post('http://localhost:3000/todos', temp);
+    //   if (response?.status === 200) {
+    //     fetchDataFromAPI(dispatch)
+    //   }
+    //   console.log("todosList: ",todosList)
+    // } catch (error) {
+    //   console.log(error)
+    // }
+    dispatch(addItem(temp))
     setInput("")
+    console.log('abc',temp)
   }
 
   useEffect(() => {
