@@ -5,15 +5,14 @@ import axios from "axios";
 import { format } from "date-fns";
 
 import Todo from "./Todo";
-import { addItem, fetchData } from "../redux/actions";
-import { fetchDataFromAPI } from "../API/fetchDataFromAPI";
+import { addTodos, fetchTodos } from "../features/todo/todoSlice"
 
 export default function TodoList() {
   const [input, setInput] = useState("")
   const [priority, setPriority] = useState("MEDIUM")
   const [category, setCategory] = useState("LEARNING")
 
-  const todosList = useSelector((state) => state.todoslist);
+  const todosList = useSelector((state) => state.todosList);
 
   const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -40,35 +39,12 @@ export default function TodoList() {
       "status": "TO DO",
       "dueDate": date
     }
-    // try {
-    //   const response = await axios.post('http://localhost:3000/todos', temp);
-    //   if (response?.status === 200) {
-    //     fetchDataFromAPI(dispatch)
-    //   }
-    //   console.log("todosList: ",todosList)
-    // } catch (error) {
-    //   console.log(error)
-    // }
-    dispatch(addItem(temp))
+    dispatch(addTodos(temp))
     setInput("")
-    console.log('abc',temp)
   }
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/todos/`
-        );
-        if (response?.status === 200) {
-          dispatch(fetchData(response.data));
-        }
-        console.log("response", response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchTodos();
+    dispatch(fetchTodos())
   }, []);
 
   return (
@@ -76,9 +52,9 @@ export default function TodoList() {
       <Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
         {todosList.map((todo => {
           return (
-            <Todo 
-            key={todo.id}
-            data={todo}
+            <Todo
+              key={todo.id}
+              data={todo}
             />
           )
         }))}
