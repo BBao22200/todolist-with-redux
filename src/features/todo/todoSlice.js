@@ -3,31 +3,25 @@ import axios from "axios";
 
 export const todoSlice = createSlice({
   name: "todosList",
-  initialState: [],
-  reducers: {
-    addTodo: (state, action) => {
-      state.push(action.payload);
-    },
-    deleteTodo: (state, action) => {
-      return state.filter((item) => item.id !== action.payload);
-    },
-  },
+  initialState: { status: 'false', todos: [] },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.status = 'true';
+      })
       .addCase(fetchTodos.fulfilled, (state, action) => {
-        return action.payload;
+        state.todos = action.payload;
+        state.status = 'false'
       })
       .addCase(addTodos.fulfilled, (state, action) => {
-        console.log(action.meta.arg);
-        state.push(action.meta.arg);
+        state.todos.push(action.meta.arg);
       })
       .addCase(deleteTodos.fulfilled, (state, action) => {
-        return state.filter(item => item.id !== action.meta.arg);
+        return state.todos.filter(item => item.id !== action.meta.arg);
       });
   },
 });
 
-// this is for configureStore
 export default todoSlice.reducer;
 
 export const fetchTodos = createAsyncThunk("fetchTodos", async () => {

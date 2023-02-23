@@ -11,7 +11,8 @@ export default function TodoList() {
   const [priority, setPriority] = useState("MEDIUM")
   const [category, setCategory] = useState("LEARNING")
 
-  const todosList = useSelector((state) => state.todosList);
+  const todosList = useSelector((state) => state.todosList.todos);
+  const isLoading = useSelector((state) => state.todosList.status === "true");
 
   const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -43,20 +44,19 @@ export default function TodoList() {
   }
 
   useEffect(() => {
-    dispatch(fetchTodos())
+    dispatch(fetchTodos()).then((state) => { console.log(state.status) })
   }, []);
 
   return (
     <Row style={{ height: "calc(100% - 40px)" }}>
       <Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
-        {todosList.map((todo => {
-          return (
-            <Todo
-              key={todo.id}
-              data={todo}
-            />
-          )
-        }))}
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          todosList.map((todo) => (
+            <Todo key={todo.id} data={todo} />
+          ))
+        )}
       </Col>
       <Col span={24}>
         <Input.Group style={{ display: "flex" }}>
